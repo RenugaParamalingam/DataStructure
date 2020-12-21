@@ -17,6 +17,18 @@ func main() {
 	s.Reverse()
 	fmt.Println("After reverse ")
 	s.Print()
+
+	fmt.Println("hasCycleUsingPointer: ", s.HasCycleUsingPointer())
+	fmt.Println("hasCycleUsingMap: ", s.HasCycleUsingMap())
+
+	node2 := s.GetByIndex(2)
+	node2.next = s.Head.next
+	fmt.Println("Cycle added")
+	// s.Print()
+
+	fmt.Println("hasCycleUsingPointer: ", s.HasCycleUsingPointer())
+
+	fmt.Println("hasCycleUsingMap: ", s.HasCycleUsingMap())
 }
 
 // Node holds structure for a node in singly linked list
@@ -144,4 +156,38 @@ func (s *SinglyLinkedList) Reverse() {
 	}
 	s.Head = prev
 
+}
+
+// HasCycleUsingPointer detects and return true if cycle exists using pointers
+func (s *SinglyLinkedList) HasCycleUsingPointer() bool {
+	slow := s.Head
+	fast := s.Head
+
+	for fast != nil && fast.next != nil {
+		slow = slow.next
+		fast = fast.next.next
+
+		if slow == fast {
+			return true
+		}
+	}
+
+	return false
+}
+
+// HasCycleUsingMap detects and return true if cycle exists using map
+func (s *SinglyLinkedList) HasCycleUsingMap() bool {
+	visited := make(map[*Node]bool, 0)
+
+	node := s.Head
+	for node.next != nil {
+		if _, ok := visited[node]; ok {
+			return true
+		}
+
+		visited[node] = true
+		node = node.next
+	}
+
+	return false
 }
