@@ -6,13 +6,19 @@ func main() {
 	s := NewSinglyLinkedList()
 	s.Push(1)
 	s.Push(3)
+	s.Push(4)
 
 	s.Print()
-	fmt.Println(s.GetByIndex(1))
+	fmt.Println("node at index 1: ", s.GetByIndex(1))
 
+	fmt.Println("push at index 1 with data 2")
 	s.PushAtIndex(2, 1)
 	s.Print()
 	fmt.Println("length: ", s.Length())
+
+	s.DeleteAtIndex(1)
+	fmt.Println("After deleting at index ", 1)
+	s.Print()
 
 	s.Reverse()
 	fmt.Println("After reverse ")
@@ -96,6 +102,32 @@ func (s *SinglyLinkedList) PushAtIndex(data, index int) {
 
 	prev.next = node
 	node.next = reqIndex
+}
+
+// DeleteAtIndex deletes node of the given index
+func (s *SinglyLinkedList) DeleteAtIndex(index int) {
+	if index == 0 {
+		if s.Head.next != nil {
+			s.Head = s.Head.next
+
+			return
+		}
+		s.Head = nil
+
+		return
+	}
+
+	prev := s.Head
+	count := 0
+	for node := s.Head; node != nil; node = node.next {
+		if count == index {
+			prev.next = node.next
+			break
+		}
+
+		prev = node
+		count++
+	}
 }
 
 // GetByIndex returns node for the index
