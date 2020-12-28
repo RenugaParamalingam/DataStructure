@@ -247,3 +247,24 @@ func (s *SinglyLinkedList) HasCycleUsingMap() bool {
 
 	return false
 }
+
+func (s *SinglyLinkedList) removeNthFromEnd(n int) {
+	slow := s.Head
+	fast := s.Head
+
+	for i := 0; i < n; i++ {
+		fast = fast.next
+	}
+
+	if fast == nil {
+		s.Head = s.Head.next
+		return
+	}
+
+	for fast.next != nil {
+		slow = slow.next
+		fast = fast.next
+	}
+
+	slow.next = slow.next.next
+}
