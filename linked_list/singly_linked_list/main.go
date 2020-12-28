@@ -16,6 +16,10 @@ func main() {
 	s.Print()
 	fmt.Println("length: ", s.Length())
 
+	fmt.Println("\n after reorder")
+	s.ReorderList()
+	s.Print()
+
 	s.DeleteAtIndex(1)
 	fmt.Println("After deleting at index ", 1)
 	s.Print()
@@ -188,6 +192,26 @@ func (s *SinglyLinkedList) Reverse() {
 	}
 	s.Head = prev
 
+}
+
+// ReorderList reorder list in the following pattern
+// Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+// reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+func (s *SinglyLinkedList) ReorderList() {
+	l := s.Length()
+
+	for i := 1; i <= l/2-1; i++ {
+		prev := s.GetByIndex(i)
+		nex := prev.next
+		reorderNodePrev := s.GetByIndex(l - 1 - i)
+		reorderNode := reorderNodePrev.next
+		fmt.Println(prev, nex, reorderNodePrev, reorderNode)
+		reorderNodePrev.next = nil
+
+		prev.next = reorderNode
+		reorderNode.next = nex
+
+	}
 }
 
 // HasCycleUsingPointer detects and return true if cycle exists using pointers
