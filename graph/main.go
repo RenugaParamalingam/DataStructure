@@ -3,49 +3,80 @@ package main
 import "fmt"
 
 func main() {
-	// g := NewGraph(5)
+	g := NewGraph(5)
 
-	// g.AddEdges(1, 2)
-	// g.AddEdges(1, 3)
-
-	// g.Print()
-
-	g := NewGraph()
-
-	g.AddNode(1)
-	g.AddNode(2)
-	g.AddNode(3)
-
-	g.AddEdge(1, 2, false)
-	g.AddEdge(1, 3, false)
-	g.AddEdge(2, 3, false)
+	g.AddEdges(1, 2)
+	g.AddEdges(1, 3)
 
 	g.PrintEdges()
+
+	fmt.Println("\n arbitary labeled graph")
+	ag := NewArbitaryLabeledGraph()
+
+	ag.AddNode(1)
+	ag.AddNode(2)
+	ag.AddNode(3)
+
+	ag.AddEdge(1, 2, false)
+	ag.AddEdge(1, 3, false)
+	ag.AddEdge(2, 3, false)
+
+	ag.PrintEdges()
 }
 
 // Graph structure
 type Graph struct {
+	Nodes int
+	Edges [][]int
+}
+
+// NewGraph creates new graph
+func NewGraph(nodes int) *Graph {
+	return &Graph{
+		Nodes: nodes,
+		Edges: make([][]int, nodes),
+	}
+}
+
+// AddEdges adds edge from u to v in graph
+func (g *Graph) AddEdges(u, v int) {
+	g.Edges[u] = append(g.Edges[u], v)
+}
+
+// PrintEdges prints all edges of graph
+func (g *Graph) PrintEdges() {
+	fmt.Println(g)
+
+	for u, adjacent := range g.Edges {
+		for _, v := range adjacent {
+			fmt.Printf("Edge: %d -> %d \n", u, v)
+		}
+	}
+}
+
+// ArbitaryLabeledGraph is graph structure
+type ArbitaryLabeledGraph struct {
 	Nodes map[int]struct{}
 	Edges map[int]map[int]struct{}
 }
 
-// NewGraph creates new graph
-func NewGraph() *Graph {
-	return &Graph{
+// NewArbitaryLabeledGraph creates new graph
+func NewArbitaryLabeledGraph() *ArbitaryLabeledGraph {
+	return &ArbitaryLabeledGraph{
 		Nodes: make(map[int]struct{}),
 		Edges: make(map[int]map[int]struct{}),
 	}
 }
 
 // AddNode adds node to graph
-func (g *Graph) AddNode(node int) {
+func (g *ArbitaryLabeledGraph) AddNode(node int) {
 	if _, ok := g.Nodes[node]; !ok {
 		g.Nodes[node] = struct{}{}
 	}
 }
 
 // AddEdge adds edge from u to v in graph
-func (g *Graph) AddEdge(u, v int, unDirected bool) {
+func (g *ArbitaryLabeledGraph) AddEdge(u, v int, unDirected bool) {
 	if _, ok := g.Nodes[u]; !ok {
 		g.Nodes[u] = struct{}{}
 	}
@@ -70,35 +101,11 @@ func (g *Graph) AddEdge(u, v int, unDirected bool) {
 }
 
 // PrintEdges prints all edges of graph
-func (g *Graph) PrintEdges() {
+func (g *ArbitaryLabeledGraph) PrintEdges() {
+	fmt.Println(g)
 	for u, adjacent := range g.Edges {
 		for v := range adjacent {
 			fmt.Printf("Edge: %d -> %d \n", u, v)
 		}
 	}
 }
-
-// type Graph struct {
-// 	Nodes int
-// 	Edges [][]int
-// }
-
-// func NewGraph(nodes int) *Graph {
-// 	return &Graph{
-// 		Nodes: nodes,
-// 		Edges: make([][]int, nodes),
-// 	}
-// }
-
-// func (g *Graph) AddEdges(u, v int) {
-// 	g.Edges[u] = append(g.Edges[u], v)
-// }
-
-// func (g *Graph) Print() {
-// 	fmt.Println(g)
-// 	for u, adjacent := range g.Edges {
-// 		for _, v := range adjacent {
-// 			fmt.Printf("Edge: %d -> %d \n", u, v)
-// 		}
-// 	}
-// }
