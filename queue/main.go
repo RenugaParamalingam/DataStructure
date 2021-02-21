@@ -5,11 +5,15 @@ import "fmt"
 func main() {
 	var q Queue
 	q.Enqueue("1")
+	q.Enqueue("2")
+	q.Enqueue("3")
 	q.Print()
 
 	q.Dequeue()
 	q.Print()
 
+	q.Dequeue()
+	q.Dequeue()
 	q.Dequeue()
 }
 
