@@ -42,6 +42,11 @@ func main() {
 
 	fmt.Println("minimum value: ", t.MinValue())
 	fmt.Println("maximum value: ", t.MaxValue())
+
+	// t.Invert()
+	mirror(t.Root)
+	fmt.Println("\n Inorder traversal after mirror")
+	t.InOrder(t.Root)
 }
 
 // Node holds structure for a node in binary tree
@@ -298,4 +303,48 @@ func (t *Tree) MaxValue() int {
 	}
 
 	return -1
+}
+
+// Invert inverts left and right of the binary tree.
+func (t *Tree) Invert() {
+	q := []*Node{t.Root}
+
+	for len(q) > 0 {
+		current := q[0]
+
+		if current.Left != nil && current.Right != nil {
+			temp := current.Left.Data
+			current.Left.Data = current.Right.Data
+			current.Right.Data = temp
+		} else if current.Left == nil {
+			current.Left = current.Right
+			current.Right = nil
+		} else if current.Right == nil {
+			current.Right = current.Left
+			current.Left = nil
+		}
+
+		if current.Left != nil {
+			q = append(q, current.Left)
+		}
+
+		if current.Right != nil {
+			q = append(q, current.Right)
+		}
+
+		q = q[1:]
+	}
+}
+
+func mirror(node *Node) {
+	if node == nil {
+		return
+	}
+
+	mirror(node.Left)
+	mirror(node.Right)
+
+	temp := node.Left
+	node.Left = node.Right
+	node.Right = temp
 }
