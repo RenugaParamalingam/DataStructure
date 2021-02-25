@@ -32,6 +32,12 @@ func main() {
 
 	fmt.Println("max depth: ", MaxDepth(t.Root))
 	fmt.Println("min depth: ", MinDepth(t.Root))
+
+	invalidTree := Tree{}
+	invalidTree.Root = &Node{Data: 1, Left: &Node{Data: 2}, Right: &Node{Data: 3}}
+
+	fmt.Println("minimum value: ", t.MinValue())
+	fmt.Println("maximum value: ", t.MaxValue())
 }
 
 // Node holds structure for a node in binary tree
@@ -206,4 +212,38 @@ func min(a int, b int) int {
 		return a
 	}
 	return b
+}
+
+//MinValue returns minimum value in the tree.
+func (t *Tree) MinValue() int {
+	if t.Root == nil {
+		return -1
+	}
+
+	node := t.Root
+	for node != nil {
+		if node.Left == nil {
+			return node.Data
+		}
+		node = node.Left
+	}
+
+	return -1
+}
+
+//MaxValue returns minimum value in the tree.
+func (t *Tree) MaxValue() int {
+	if t.Root == nil {
+		return -1
+	}
+
+	node := t.Root
+	for node != nil {
+		if node.Right == nil {
+			return node.Data
+		}
+		node = node.Right
+	}
+
+	return -1
 }
