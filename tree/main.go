@@ -5,12 +5,16 @@ import "fmt"
 func main() {
 	var t Tree
 
-	t.Insert(5)
+	t.Insert(4)
 	t.Insert(1)
 	t.Insert(6)
 	t.Insert(3)
+	t.Insert(5)
 	t.Insert(8)
+	t.Insert(7)
 	t.Insert(9)
+
+	Delete(t.Root, 6)
 
 	fmt.Println("Pre order traversal")
 	t.PreOrder(t.Root)
@@ -58,8 +62,8 @@ func (t *Tree) Insert(data int) {
 		t.Root = &Node{Data: data}
 		return
 	}
-	t.Root.insertNode(data)
 
+	t.Root.insertNode(data)
 }
 
 func (n *Node) insertNode(data int) {
@@ -76,6 +80,54 @@ func (n *Node) insertNode(data int) {
 			n.Right.insertNode(data)
 		}
 	}
+}
+
+// Delete removes the node from binary search tree.
+func Delete(node *Node, key int) *Node {
+	if node == nil {
+		return nil
+	}
+
+	if key < node.Data {
+		node.Left = Delete(node.Left, key)
+		return node
+	}
+
+	if key > node.Data {
+		node.Right = Delete(node.Right, key)
+		return node
+	}
+
+	if node.Left == nil && node.Right == nil {
+		node = nil
+		return nil
+	}
+
+	if node.Left == nil {
+		node = node.Right
+		return node
+	}
+
+	if node.Right == nil {
+		node = node.Left
+		return node
+	}
+
+	// left most in the right subtree
+	leftMostRight := node.Right
+
+	for {
+		if leftMostRight != nil && leftMostRight.Left != nil {
+			leftMostRight = leftMostRight.Left
+		} else {
+			break
+		}
+	}
+
+	node.Data = leftMostRight.Data
+	node.Right = Delete(node.Right, node.Data)
+
+	return node
 }
 
 // PreOrder implements pre-order traversal in binary search tree
