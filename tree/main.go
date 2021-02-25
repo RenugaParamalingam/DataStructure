@@ -10,6 +10,7 @@ func main() {
 	t.Insert(6)
 	t.Insert(3)
 	t.Insert(8)
+	t.Insert(9)
 
 	fmt.Println("Pre order traversal")
 	t.PreOrder(t.Root)
@@ -28,6 +29,8 @@ func main() {
 	t.PrintLevelOrder()
 
 	fmt.Println("\n Get level order: ", t.GetLevelOrder())
+
+	fmt.Println("max depth: ", MaxDepth(t.Root))
 
 }
 
@@ -163,4 +166,20 @@ func (t *Tree) GetLevelOrder() [][]int {
 	}
 
 	return levels[:len(levels)-1]
+}
+
+// MaxDepth returns the maximum depth of the tree.
+func MaxDepth(root *Node) int {
+	if root == nil {
+		return 0
+	}
+
+	return max(MaxDepth(root.Left), MaxDepth(root.Right)) + 1
+}
+
+func max(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
