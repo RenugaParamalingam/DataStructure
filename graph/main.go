@@ -21,6 +21,16 @@ func main() {
 
 	fmt.Println("\nDFS")
 	g.DFS()
+
+	fmt.Println("\n Topological sorting")
+	g.TopologicalSorting()
+
+	g.AddEdge(4, 4)
+	g.Print()
+
+	fmt.Println("\n Topological sorting")
+	g.TopologicalSorting()
+
 }
 
 // Graph structure
@@ -109,4 +119,61 @@ func (g *Graph) DFS() {
 			s = append(s, adjacents...)
 		}
 	}
+}
+
+// TopologicalSorting prints a linear ordering of vertices in a directed acyclic graph such that,
+// for every directed edge a -> b, vertex ‘a’ comes before vertex ‘b’
+func (g *Graph) TopologicalSorting() {
+	inDegree := make(map[int]int)
+	q := []int{}
+	visited := 0
+	result := []int{}
+
+	// add indegree for each vertex
+	for _, v := range g.Vertex {
+		inDegree[v] = 0
+	}
+
+	for _, adjacents := range g.Edge {
+		for _, a := range adjacents {
+			inDegree[a] = inDegree[a] + 1
+		}
+	}
+
+	q = addVertextToQueue(inDegree, q)
+
+	for len(q) > 0 {
+		current := q[0]
+
+		// dequeue vertex
+		q = q[1:]
+		delete(inDegree, current)
+
+		visited++
+		result = append(result, current)
+
+		// decrement indegree of adjacent vertex of visited vertex.
+		for _, adjacent := range g.Edge[current] {
+			inDegree[adjacent] = inDegree[adjacent] - 1
+		}
+
+		q = addVertextToQueue(inDegree, q)
+	}
+
+	if visited != len(g.Vertex) {
+		fmt.Println("graph is cyclic")
+		return
+	}
+
+	fmt.Println("result: ", result)
+}
+
+func addVertextToQueue(inDegree map[int]int, q []int) []int {
+	for vertex, degree := range inDegree {
+		if degree == 0 {
+			q = append(q, vertex)
+		}
+	}
+
+	return q
 }
