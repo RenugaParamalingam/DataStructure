@@ -3,109 +3,110 @@ package main
 import "fmt"
 
 func main() {
-	g := NewGraph(5)
+	g := NewGraph()
+	g.AddVertex(1)
+	g.AddVertex(2)
+	g.AddVertex(3)
+	g.AddVertex(4)
 
-	g.AddEdges(1, 2)
-	g.AddEdges(1, 3)
+	g.AddEdge(1, 2)
+	g.AddEdge(1, 3)
+	g.AddEdge(2, 3)
+	g.AddEdge(3, 4)
 
-	g.PrintEdges()
+	g.Print()
 
-	fmt.Println("\n arbitary labeled graph")
-	ag := NewArbitaryLabeledGraph()
+	fmt.Println("\nBFS")
+	g.BFS()
 
-	ag.AddNode(1)
-	ag.AddNode(2)
-	ag.AddNode(3)
-
-	ag.AddEdge(1, 2, false)
-	ag.AddEdge(1, 3, false)
-	ag.AddEdge(2, 3, false)
-
-	ag.PrintEdges()
+	fmt.Println("\nDFS")
+	g.DFS()
 }
 
 // Graph structure
 type Graph struct {
-	Nodes int
-	Edges [][]int
+	Vertex []int
+	Edge   map[int][]int
 }
 
-// NewGraph creates new graph
-func NewGraph(nodes int) *Graph {
+// NewGraph initialize new graph
+func NewGraph() *Graph {
 	return &Graph{
-		Nodes: nodes,
-		Edges: make([][]int, nodes),
+		Vertex: []int{},
+		Edge:   make(map[int][]int),
 	}
 }
 
-// AddEdges adds edge from u to v in graph
-func (g *Graph) AddEdges(u, v int) {
-	g.Edges[u] = append(g.Edges[u], v)
+// AddVertex adds new vertex
+func (g *Graph) AddVertex(v int) {
+	g.Vertex = append(g.Vertex, v)
 }
 
-// PrintEdges prints all edges of graph
-func (g *Graph) PrintEdges() {
-	fmt.Println(g)
+// AddEdge adds new edge
+func (g *Graph) AddEdge(u, v int) {
+	g.Edge[u] = append(g.Edge[u], v)
+}
 
-	for u, adjacent := range g.Edges {
-		for _, v := range adjacent {
-			fmt.Printf("Edge: %d -> %d \n", u, v)
+// Print prints the graph
+func (g *Graph) Print() {
+	fmt.Print("Edges of graph")
+	for v, adjacents := range g.Edge {
+		fmt.Printf("\n%d -> ", v)
+		for _, a := range adjacents {
+			fmt.Printf("%d, ", a)
 		}
 	}
 }
 
-// ArbitaryLabeledGraph is graph structure
-type ArbitaryLabeledGraph struct {
-	Nodes map[int]struct{}
-	Edges map[int]map[int]struct{}
-}
+// BFS implements breath first traversal
+func (g *Graph) BFS() {
+	visited := make(map[int]bool)
 
-// NewArbitaryLabeledGraph creates new graph
-func NewArbitaryLabeledGraph() *ArbitaryLabeledGraph {
-	return &ArbitaryLabeledGraph{
-		Nodes: make(map[int]struct{}),
-		Edges: make(map[int]map[int]struct{}),
-	}
-}
-
-// AddNode adds node to graph
-func (g *ArbitaryLabeledGraph) AddNode(node int) {
-	if _, ok := g.Nodes[node]; !ok {
-		g.Nodes[node] = struct{}{}
-	}
-}
-
-// AddEdge adds edge from u to v in graph
-func (g *ArbitaryLabeledGraph) AddEdge(u, v int, unDirected bool) {
-	if _, ok := g.Nodes[u]; !ok {
-		g.Nodes[u] = struct{}{}
+	for _, v := range g.Vertex {
+		visited[v] = false
 	}
 
-	if _, ok := g.Nodes[v]; !ok {
-		g.Nodes[v] = struct{}{}
-	}
+	q := []int{g.Vertex[0]}
 
-	if _, ok := g.Edges[u]; !ok {
-		g.Edges[u] = make(map[int]struct{})
-	}
+	for len(q) > 0 {
+		current := q[0]
 
-	g.Edges[u][v] = struct{}{}
+		if !visited[current] {
+			visited[current] = true
 
-	if unDirected {
-		if _, ok := g.Edges[v]; !ok {
-			g.Edges[v] = make(map[int]struct{})
+			fmt.Printf("%d -> ", current)
+
+			adjacents := g.Edge[current]
+
+			q = append(q, adjacents...)
 		}
 
-		g.Edges[v][u] = struct{}{}
+		q = q[1:]
 	}
 }
 
-// PrintEdges prints all edges of graph
-func (g *ArbitaryLabeledGraph) PrintEdges() {
-	fmt.Println(g)
-	for u, adjacent := range g.Edges {
-		for v := range adjacent {
-			fmt.Printf("Edge: %d -> %d \n", u, v)
+// DFS implements depth first traversal
+func (g *Graph) DFS() {
+	visited := make(map[int]bool)
+
+	for _, v := range g.Vertex {
+		visited[v] = false
+	}
+
+	s := []int{g.Vertex[0]}
+
+	for len(s) > 0 {
+		current := s[len(s)-1]
+		s = s[:len(s)-1]
+
+		if !visited[current] {
+			visited[current] = true
+
+			fmt.Printf("%d -> ", current)
+
+			adjacents := g.Edge[current]
+
+			s = append(s, adjacents...)
 		}
 	}
 }
