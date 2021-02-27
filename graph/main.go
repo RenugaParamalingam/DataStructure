@@ -140,7 +140,11 @@ func (g *Graph) TopologicalSorting() {
 		}
 	}
 
-	q = addVertextToQueue(inDegree, q)
+	for vertex, degree := range inDegree {
+		if degree == 0 {
+			q = append(q, vertex)
+		}
+	}
 
 	for len(q) > 0 {
 		current := q[0]
@@ -152,12 +156,15 @@ func (g *Graph) TopologicalSorting() {
 		visited++
 		result = append(result, current)
 
-		// decrement indegree of adjacent vertex of visited vertex.
 		for _, adjacent := range g.Edge[current] {
+			// decrement indegree of adjacent vertex of visited vertex.
 			inDegree[adjacent] = inDegree[adjacent] - 1
-		}
 
-		q = addVertextToQueue(inDegree, q)
+			// Enqueue the neighboring vertices with the in-degree of 0.
+			if inDegree[adjacent] == 0 {
+				q = append(q, adjacent)
+			}
+		}
 	}
 
 	if visited != len(g.Vertex) {
@@ -166,14 +173,4 @@ func (g *Graph) TopologicalSorting() {
 	}
 
 	fmt.Println("result: ", result)
-}
-
-func addVertextToQueue(inDegree map[int]int, q []int) []int {
-	for vertex, degree := range inDegree {
-		if degree == 0 {
-			q = append(q, vertex)
-		}
-	}
-
-	return q
 }
